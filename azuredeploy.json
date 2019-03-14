@@ -1,470 +1,228 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "virtualNetworks_WPVNET_name": {
-            "defaultValue": "WPVNET",
-            "type": "String"
-        },
-        "networkInterfaces_VMNic_name": {
-            "defaultValue": "VMNic",
-            "type": "String"
-        },
-        "publicIPAddresses_publicIP_name": {
-            "defaultValue": "publicIP",
-            "type": "String"
-        },
-        "networkSecurityGroups_wordpress_name": {
-            "defaultValue": "wordpress",
-            "type": "String"
-        },
-        "virtualMachines_vinwordpress12demo_name": {
-            "defaultValue": "vinwordpress12demo",
-            "type": "String"
-        },
-        "subnets_Subnet_1_name": {
-            "defaultValue": "Subnet-1",
-            "type": "String"
-        },
-        "securityRules_SSH_name": {
-            "defaultValue": "SSH",
-            "type": "String"
-        },
-        "securityRules_Port_80_name": {
-            "defaultValue": "Port_80",
-            "type": "String"
-        },
-        "extensions_newuserscript_name": {
-            "defaultValue": "newuserscript",
-            "type": "String"
-        },
-        "virtualMachines_vinwordpress12demo_id": {
-            "defaultValue": "/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Compute/disks/vinwordpress12demo_OSDisk",
-            "type": "String"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmDnsName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the unique DNS name of the for the public IP for your VM"
+      }
     },
-    "variables": {},
-    "resources": [
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Compute/virtualMachines/vinwordpress12demo'.",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('virtualMachines_vinwordpress12demo_name')]",
-            "apiVersion": "2018-10-01",
-            "location": "westus2",
-            "scale": null,
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_DS1_v2"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "14.04.5-LTS",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "name": "[concat(parameters('virtualMachines_vinwordpress12demo_name'),'_OSDisk')]",
-                        "createOption": "FromImage",
-                        "caching": "ReadWrite",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS",
-                            "id": "[parameters('virtualMachines_vinwordpress12demo_id')]"
-                        },
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachines_vinwordpress12demo_name')]",
-                    "adminUsername": "cudaadmin",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false
-                    },
-                    "secrets": []
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_VMNic_name'))]"
-                        }
-                    ]
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_VMNic_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/networkInterfaces/VMNic'.",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('networkInterfaces_VMNic_name')]",
-            "apiVersion": "2018-12-01",
-            "location": "westus2",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "6cafe203-7c5a-4311-9bb3-246a5dc01133",
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "etag": "W/\"46a2a3c3-344c-4e1c-ab33-9d1e9117b0fd\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "privateIPAddress": "10.0.0.4",
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_publicIP_name'))]"
-                            },
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_WPVNET_name'), parameters('subnets_Subnet_1_name'))]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": [],
-                    "appliedDnsServers": [],
-                    "internalDomainNameSuffix": "a3425nj3fh5enp3uom3n5g5z3b.xx.internal.cloudapp.net"
-                },
-                "macAddress": "00-0D-3A-6D-3C-A6",
-                "enableAcceleratedNetworking": false,
-                "enableIPForwarding": false,
-                "primary": true,
-                "tapConfigurations": []
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_publicIP_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_WPVNET_name'), parameters('subnets_Subnet_1_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/networkSecurityGroups/wordpress'.",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('networkSecurityGroups_wordpress_name')]",
-            "apiVersion": "2018-12-01",
-            "location": "westus2",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "35f8a3e7-1fb7-40de-b20f-76d5b82eec0c",
-                "securityRules": [
-                    {
-                        "name": "SSH",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "22",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 110,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "Port_80",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "80",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 120,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    }
-                ],
-                "defaultSecurityRules": [
-                    {
-                        "name": "AllowVnetInBound",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "description": "Allow inbound traffic from all VMs in VNET",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "*",
-                            "sourceAddressPrefix": "VirtualNetwork",
-                            "destinationAddressPrefix": "VirtualNetwork",
-                            "access": "Allow",
-                            "priority": 65000,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "AllowAzureLoadBalancerInBound",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "description": "Allow inbound traffic from azure load balancer",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "*",
-                            "sourceAddressPrefix": "AzureLoadBalancer",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 65001,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "DenyAllInBound",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "description": "Deny all inbound traffic",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "*",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Deny",
-                            "priority": 65500,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "AllowVnetOutBound",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "*",
-                            "sourceAddressPrefix": "VirtualNetwork",
-                            "destinationAddressPrefix": "VirtualNetwork",
-                            "access": "Allow",
-                            "priority": 65000,
-                            "direction": "Outbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "AllowInternetOutBound",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "description": "Allow outbound traffic from all VMs to Internet",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "*",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "Internet",
-                            "access": "Allow",
-                            "priority": 65001,
-                            "direction": "Outbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "DenyAllOutBound",
-                        "etag": "W/\"400af6f0-57bb-4dd5-8bce-93cf131a0f94\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "description": "Deny all outbound traffic",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "*",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Deny",
-                            "priority": 65500,
-                            "direction": "Outbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    }
-                ]
-            },
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/publicIPAddresses/publicIP'.",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "sku": {
-                "name": "Basic",
-                "tier": "Regional"
-            },
-            "name": "[parameters('publicIPAddresses_publicIP_name')]",
-            "apiVersion": "2018-12-01",
-            "location": "westus2",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "cf23709e-b374-46ad-ae61-1ee681e13b06",
-                "ipAddress": "51.143.103.87",
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4,
-                "dnsSettings": {
-                    "domainNameLabel": "vinwordpress12demo",
-                    "fqdn": "vinwordpress12demo.westus2.cloudapp.azure.com"
-                },
-                "ipTags": []
-            },
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/virtualNetworks/WPVNET'.",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('virtualNetworks_WPVNET_name')]",
-            "apiVersion": "2018-12-01",
-            "location": "westus2",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "b5cf7d07-293d-46fe-bfb4-733adf9bf9e9",
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.0.0.0/16"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "Subnet-1",
-                        "etag": "W/\"a95582cf-d532-40a4-b7d0-b934162a83bf\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "addressPrefix": "10.0.0.0/24",
-                            "delegations": []
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [],
-                "enableDdosProtection": false,
-                "enableVmProtection": false
-            },
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Compute/virtualMachines/vinwordpress12demo/extensions/newuserscript'.",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('virtualMachines_vinwordpress12demo_name'), '/', parameters('extensions_newuserscript_name'))]",
-            "apiVersion": "2018-10-01",
-            "location": "westus2",
-            "scale": null,
-            "properties": {
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/wordpress-single-vm-ubuntu/install_wordpress.sh"
-                    ]
-                },
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "CustomScript",
-                "typeHandlerVersion": "2.0",
-                "protectedSettings": {
-                    "storageAccountName": "[parameters('extensions_newuserscript_storageAccountName')]",
-                    "storageAccountKey": "[parameters('extensions_newuserscript_storageAccountKey')]",
-                    "commandToExecute": "[parameters('extensions_newuserscript_commandToExecute')]"
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_vinwordpress12demo_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/networkSecurityGroups/wordpress/securityRules/SSH'.",
-            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-            "name": "[concat(parameters('networkSecurityGroups_wordpress_name'), '/', parameters('securityRules_SSH_name'))]",
-            "apiVersion": "2018-12-01",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "protocol": "*",
-                "sourcePortRange": "*",
-                "destinationPortRange": "22",
-                "sourceAddressPrefix": "*",
-                "destinationAddressPrefix": "*",
-                "access": "Allow",
-                "priority": 110,
-                "direction": "Inbound",
-                "sourcePortRanges": [],
-                "destinationPortRanges": [],
-                "sourceAddressPrefixes": [],
-                "destinationAddressPrefixes": []
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_wordpress_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/networkSecurityGroups/wordpress/securityRules/Port_80'.",
-            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-            "name": "[concat(parameters('networkSecurityGroups_wordpress_name'), '/', parameters('securityRules_Port_80_name'))]",
-            "apiVersion": "2018-12-01",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "protocol": "*",
-                "sourcePortRange": "*",
-                "destinationPortRange": "80",
-                "sourceAddressPrefix": "*",
-                "destinationAddressPrefix": "*",
-                "access": "Allow",
-                "priority": 120,
-                "direction": "Inbound",
-                "sourcePortRanges": [],
-                "destinationPortRanges": [],
-                "sourceAddressPrefixes": [],
-                "destinationAddressPrefixes": []
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_wordpress_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/25410da1-d303-4b10-8a26-24c2913f05a4/resourceGroups/vin-wordpressdemo/providers/Microsoft.Network/virtualNetworks/WPVNET/subnets/Subnet-1'.",
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "name": "[concat(parameters('virtualNetworks_WPVNET_name'), '/', parameters('subnets_Subnet_1_name'))]",
-            "apiVersion": "2018-12-01",
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "addressPrefix": "10.0.0.0/24",
-                "delegations": []
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_WPVNET_name'))]"
-            ]
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the username you wish to assign to your VMs admin account"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "This is the password you wish to assign to your VMs admin account"
+      }
+    },
+    "mySqlPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for your mySQL account"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Size of VM"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "nicName": "VMNic",
+    "addressPrefix": "10.0.0.0/16",
+    "imagePublisher": "Canonical",
+    "imageVersion": "latest",
+    "imageSKU": "14.04.5-LTS",
+    "imageOffer": "UbuntuServer",
+    "subnetName": "Subnet-1",
+    "subnetPrefix": "10.0.0.0/24",
+    "storageAccountType": "Standard_LRS",
+    "publicIPAddressName": "publicIP",
+    "publicIPAddressType": "Dynamic",
+    "vmName": "[parameters('vmDnsName')]",
+    "virtualNetworkName": "WPVNET",
+    "networkSecurityGroupName": "NSG",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('vmDnsName')]"
         }
-    ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('nicName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[variables('networkSecurityGroupName')]"
+
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              },
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+        }
+      }
+    },
+    {
+     "name": "[variables('networkSecurityGroupName')]",
+     "type": "Microsoft.Network/networkSecurityGroups",
+     "apiVersion": "2016-09-01",
+     "location": "[parameters('location')]",
+     "comments": "Network Security Group (NSG) for your Primary NIC",
+     "properties": {
+       "securityRules": [
+         {
+           "name": "default-allow-ssh",
+           "properties": {
+             "priority": 1000,
+             "sourceAddressPrefix": "*",
+             "protocol": "Tcp",
+             "destinationPortRange": "22",
+             "access": "Allow",
+             "direction": "Inbound",
+             "sourcePortRange": "*",
+             "destinationAddressPrefix": "*"
+           }
+         },
+         {
+           "name": "default-allow-80",
+           "properties": {
+             "priority": 999,
+             "sourceAddressPrefix": "*",
+             "protocol": "Tcp",
+             "destinationPortRange": "80",
+             "access": "Allow",
+             "direction": "Inbound",
+             "sourcePortRange": "*",
+             "destinationAddressPrefix": "*"
+           }
+         }
+       ]
+     }
+   },
+    {
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSKU')]",
+            "version": "[variables('imageVersion')]"
+          },
+          "osDisk": {
+            "name": "[concat(variables('vmName'), '_OSDisk')]",
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[variables('storageAccountType')]"
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'),'/newuserscript')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/wordpress-single-vm-ubuntu/install_wordpress.sh"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('sh install_wordpress.sh ', parameters('mySqlPassword'))]"
+        }
+      }
+    }
+  ]
 }
