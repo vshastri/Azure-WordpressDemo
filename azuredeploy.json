@@ -2,18 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "extensions_newuserscript_storageAccountName": {
-            "defaultValue": null,
-            "type": "SecureString"
-        },
-        "extensions_newuserscript_storageAccountKey": {
-            "defaultValue": null,
-            "type": "SecureString"
-        },
-        "extensions_newuserscript_commandToExecute": {
-            "defaultValue": null,
-            "type": "SecureString"
-        },
         "virtualNetworks_WPVNET_name": {
             "defaultValue": "WPVNET",
             "type": "String"
